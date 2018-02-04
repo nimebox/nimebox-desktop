@@ -1,12 +1,14 @@
-# nimebox-desktop
+# Nimebox Desktop [![Build Status](https://travis-ci.org/Nimebox/Nimebox-desktop.svg?branch=master)](https://travis-ci.org/Nimebox/Nimebox-desktop)
 
-> Nimebox - watch anime easy way
+> Nimebox - watch anime, read news and manga easy way
 
 #### Build Setup
 
 ``` bash
+# I prefer using yarn instead npm
+
 # install dependencies
-npm install
+npm install # or yarn 
 
 # serve with hot reload at localhost:9080
 npm run dev
@@ -21,5 +23,3 @@ npm run lint
 ```
 
 ---
-
-This project was generated with [electron-vue](https://github.com/SimulatedGREG/electron-vue)@[436b5d8](https://github.com/SimulatedGREG/electron-vue/tree/436b5d835ed958c0af9ca6a32740f755eccb60e0) using [vue-cli](https://github.com/vuejs/vue-cli). Documentation about the original structure can be found [here](https://simulatedgreg.gitbooks.io/electron-vue/content/index.html).
