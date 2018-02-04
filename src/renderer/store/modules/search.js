@@ -1,5 +1,5 @@
 const state = {
-  query: ''
+  query: null
 }
 
 const mutations = {

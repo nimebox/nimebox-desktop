@@ -3,7 +3,7 @@
   <v-container fluid style="min-height: 0;" grid-list-lg>
     <v-layout row wrap>
 
-      <v-flex xs12 v-if="query != '' && error === false && loaded">
+      <v-flex xs12 v-if="query != null && !error && loaded">
         <v-card>
           <v-container fluid grid-list-lg>
             <v-layout row>
@@ -97,7 +97,7 @@
           ranked: ''
         },
         msg: 'Empty :(',
-        error: true,
+        error: false,
         loaded: false
       }
     },
