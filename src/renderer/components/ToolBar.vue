@@ -64,7 +64,7 @@
     mapGetters
   } from 'vuex'
   export default {
-    name: 'ToolBar',
+    name: 'Toolbar',
     computed: {
       ...mapGetters({
         dark: 'isDark'

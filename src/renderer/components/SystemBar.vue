@@ -16,7 +16,7 @@
 
 <script>
   export default {
-    name: 'SystemBar',
+    name: 'Systembar',
     methods: {
       minimize () {
         let window = this.$electron.remote.BrowserWindow.getFocusedWindow()

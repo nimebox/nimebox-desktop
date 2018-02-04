@@ -1,7 +1,7 @@
 <template>
   <v-app :dark="dark">
-    <system-bar></system-bar>
-    <tool-bar></tool-bar>
+    <systembar></systembar>
+    <toolbar></toolbar>
     <v-footer fixed>
       <v-spacer></v-spacer>
       <div>&copy; {{ new Date().getFullYear() }}</div>
@@ -11,8 +11,8 @@
 
 <script>
   import { mapGetters } from 'vuex'
-  import SystemBar from '@/components/SystemBar'
-  import ToolBar from '@/components/ToolBar'
+  import Systembar from '@/components/Systembar'
+  import Toolbar from '@/components/Toolbar'
 
   export default {
     name: 'NimeboxDesktop',
@@ -21,7 +21,7 @@
         dark: 'isDark'
       })
     },
-    components: { SystemBar, ToolBar }
+    components: { Systembar, Toolbar }
   }
 </script>
 
