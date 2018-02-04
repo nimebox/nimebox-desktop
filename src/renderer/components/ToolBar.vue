@@ -41,6 +41,9 @@
           {{ item.name }}
         </v-tab>
       </v-tabs>
+      <v-toolbar-side-icon @click="changeTheme">
+        <v-icon>invert_colors</v-icon>
+      </v-toolbar-side-icon>
     </v-toolbar>
     <v-tabs-items>
       <v-content>
@@ -57,8 +60,16 @@
 </template>
 
 <script>
+  import {
+    mapGetters
+  } from 'vuex'
   export default {
     name: 'ToolBar',
+    computed: {
+      ...mapGetters({
+        dark: 'isDark'
+      })
+    },
     data () {
       return {
         drawer: null,
@@ -86,6 +97,13 @@
         this.$router.push({
           path: `/anime`
         })
+      },
+      changeTheme () {
+        if (this.dark) {
+          this.$store.commit('setDark', false)
+        } else {
+          this.$store.commit('setDark', true)
+        }
       }
     }
   }
