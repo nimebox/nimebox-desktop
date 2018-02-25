@@ -4,7 +4,7 @@
     <toolbar></toolbar>
     <v-footer fixed>
       <v-spacer></v-spacer>
-      <div>&copy; {{ new Date().getFullYear() }}</div>
+      <div>Nimebox &copy; {{ new Date().getFullYear() }}</div>
     </v-footer>
   </v-app>
 </template>

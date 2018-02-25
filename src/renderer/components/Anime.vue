@@ -21,7 +21,7 @@
                   <v-card-title primary-title>
                     <div>
                       <div class="headline mb-1">{{mal.title}}
-                        <v-chip label color="yellow">
+                        <v-chip label color="accent">
                           <v-icon left>star</v-icon>{{mal.score}}/10</v-chip>
                       </div>
                       <v-chip outline>Type: {{mal.type}}</v-chip>
@@ -50,9 +50,9 @@
 
           <v-flex xs12>
 
-            <v-expansion-panel>
+            <v-expansion-panel popout focusable>
               <v-expansion-panel-content v-for="(item, key) in anime" :key="key">
-                <div slot="header">
+                <div slot="header" @click="animeEpData(item.number)" >
 
                   <v-list-tile avatar>
 
@@ -67,9 +67,21 @@
                   </v-list-tile>
 
                 </div>
-                <v-card>
-                  <v-card-text>other shit here</v-card-text>
-                </v-card>
+
+                <v-tabs  show-arrows>
+                  <v-tabs-slider></v-tabs-slider>
+                  <v-tab v-for="i in 10" :key="i" >
+                    Item {{ i }}
+                  </v-tab>
+                  <v-tabs-items>
+                    <v-tab-item v-for="i in 10" :key="i" >
+                      <v-card flat>
+                        <v-card-text> Item {{ i }}</v-card-text>
+                      </v-card>
+                    </v-tab-item>
+                  </v-tabs-items>
+                </v-tabs>
+
               </v-expansion-panel-content>
             </v-expansion-panel>
 
@@ -100,11 +112,11 @@
 
 <script>
   import mal from 'mal-scraper'
-  import api from '../api'
-  import {
+import api from '../api'
+import {
     mapGetters
   } from 'vuex'
-  export default {
+export default {
     name: 'Anime',
     computed: {
       ...mapGetters({
@@ -129,7 +141,8 @@
         anime: [],
         msg: 'Empty :(',
         error: false,
-        loaded: false
+        loaded: false,
+        animeEp: []
       }
     },
     methods: {
@@ -165,6 +178,21 @@
           const data = response.data
           console.log(data)
           this.anime = data
+
+          this.error = false
+        } catch (err) {
+          console.log(err)
+          this.error = true
+        }
+      },
+      async animeEpData (n) {
+        console.log(`${this.query}/${n}`)
+        try {
+          console.log(this.query)
+          const response = await api.get(`v1/anime/${this.query}/${n}`)
+          const data = response.data
+          console.log(data)
+          this.animeEp = data
 
           this.error = false
         } catch (err) {

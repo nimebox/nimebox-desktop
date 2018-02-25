@@ -32,7 +32,7 @@
 
       </v-list>
     </v-navigation-drawer>
-    <v-toolbar color="pink" dark tabs app fixed>
+    <v-toolbar color="primary" dark tabs app fixed>
       <v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon>
       <v-text-field prepend-icon="search" label="Search" solo-inverted class="mx-3" flat v-model="q" @keyup.enter="search">
       </v-text-field>
