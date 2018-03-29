@@ -1,5 +1,6 @@
 <template>
   <div>
+    <v-text-field prepend-icon="search" label="Search" solo-inverted  flat v-model="q" @keyup.enter="search"> </v-text-field>
     <v-container fluid style="min-height: 0;" grid-list-lg>
       <v-layout row wrap>
 
@@ -47,12 +48,14 @@
               </v-layout>
             </v-container>
           </v-card>
+        </v-flex>
 
-          <v-flex xs12>
+
+          <v-flex xs12 v-if="query != null && !error && loadedData">
 
             <v-expansion-panel popout focusable>
               <v-expansion-panel-content v-for="(item, key) in anime.list" :key="key">
-                <div slot="header" @click="animeEpData(item.number)" >
+                <div slot="header" @click.once="animeEpData(item.number)" >
 
                   <v-list-tile avatar>
 
@@ -87,22 +90,36 @@
 
           </v-flex>
 
-        </v-flex>
-
-        <v-flex xs12 v-else>
-          <v-card>
+      <v-flex xs12 v-if="error || errorData">
             <v-container fluid grid-list-lg>
               <v-layout row>
 
                 <v-flex xs12>
                   <div>
-                    <h1>{{msg}}</h1>
+                   <v-alert outline color="error" icon="warning" :value="true">
+                      Error fetching data for query: <b>{{query}}</b>
+                    </v-alert>
                   </div>
                 </v-flex>
 
               </v-layout>
             </v-container>
-          </v-card>
+        </v-flex>
+
+        <v-flex xs12 v-if="!loaded">
+            <v-container fluid grid-list-lg>
+              <v-layout row>
+
+                <v-flex xs12>
+                  <div>
+                   <v-alert outline color="info" icon="info" :value="true">
+                      Search something
+                    </v-alert>
+                  </div>
+                </v-flex>
+
+              </v-layout>
+            </v-container>
         </v-flex>
 
       </v-layout>
@@ -113,16 +130,12 @@
 <script>
 import mal from 'mal-scraper'
 import api from '../api'
-import { mapGetters } from 'vuex'
 export default {
   name: 'Anime',
-  computed: {
-    ...mapGetters({
-      query: 'getQuery'
-    })
-  },
   data () {
     return {
+      q: '',
+      query: '',
       mal: {
         title: '',
         url: '',
@@ -137,13 +150,19 @@ export default {
         ranked: ''
       },
       anime: [],
-      msg: 'Empty :(',
       error: false,
+      errorData: false,
       loaded: false,
+      loadedData: false,
       animeEp: []
     }
   },
   methods: {
+    async search () {
+      this.query = this.q
+      await this.animeInfo()
+      await this.animeData()
+    },
     async animeInfo () {
       try {
         console.log(this.query)
@@ -167,6 +186,7 @@ export default {
       } catch (err) {
         console.log(err)
         this.error = true
+        this.loaded = false
       }
     },
     async animeData () {
@@ -177,10 +197,12 @@ export default {
         console.log(data)
         this.anime = data
 
-        this.error = false
+        this.errorData = false
+        this.loadedData = true
       } catch (err) {
         console.log(err)
-        this.error = true
+        this.errorData = true
+        this.loadedData = false
       }
     },
     async animeEpData (n) {
@@ -192,22 +214,14 @@ export default {
         console.log(data)
         this.animeEp = data
 
-        this.error = false
+        this.errorData = false
+        this.loadedData = true
       } catch (err) {
         console.log(err)
-        this.error = true
+        this.errorData = true
+        this.loadedData = false
       }
     }
-  },
-  watch: {
-    query: {
-      handler: function (newQuery, oldQuery) {
-        console.log(`oldQuery: ${oldQuery} newQuery: ${newQuery}`)
-        this.animeInfo()
-        this.animeData()
-      }
-    },
-    deep: true
   }
 }
 </script>
