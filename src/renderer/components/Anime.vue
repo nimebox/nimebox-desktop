@@ -1,7 +1,22 @@
 <template>
   <div>
-    <v-text-field prepend-icon="search" label="Search" solo-inverted  flat v-model="q" @keyup.enter="search"> </v-text-field>
-    <v-container fluid style="min-height: 0;" grid-list-lg>
+ 
+    <v-select
+      prepend-icon="search" 
+      label="Search"
+      flat 
+      :items="animes.list"
+      cache-items
+      combobox
+      item-text="title" 
+      item-value="title"
+      v-model="q" 
+      @keyup.enter="search"
+      > </v-select>
+           </v-flex >
+        <v-flex xs12>
+               <v-card>
+    <v-container fluid grid-list-lg>
       <v-layout row wrap>
 
         <v-flex xs12 v-if="query != null && !error && loaded">
@@ -52,42 +67,42 @@
 
 
           <v-flex xs12 v-if="query != null && !error && loadedData">
+            <v-card>
+              <v-expansion-panel popout focusable>
+                <v-expansion-panel-content v-for="(item, key) in anime.list" :key="key">
+                  <div slot="header" @click.once="animeEpData(item.number)" >
 
-            <v-expansion-panel popout focusable>
-              <v-expansion-panel-content v-for="(item, key) in anime.list" :key="key">
-                <div slot="header" @click.once="animeEpData(item.number)" >
+                    <v-list-tile avatar>
 
-                  <v-list-tile avatar>
+                      <v-list-tile-action>
+                        <v-avatar>{{item.number}}</v-avatar>
+                      </v-list-tile-action>
 
-                    <v-list-tile-action>
-                      <v-avatar>{{item.number}}</v-avatar>
-                    </v-list-tile-action>
+                      <v-list-tile-content>
+                        <v-list-tile-title v-text="item.description"></v-list-tile-title>
+                      </v-list-tile-content>
 
-                    <v-list-tile-content>
-                      <v-list-tile-title v-text="item.description"></v-list-tile-title>
-                    </v-list-tile-content>
+                    </v-list-tile>
 
-                  </v-list-tile>
+                  </div>
 
-                </div>
+                  <v-tabs show-arrows>
+                    <v-tabs-slider></v-tabs-slider>
+                    <v-tab v-for="(ep, key) in animeEp" :key="key" >
+                      {{ ep.host }}
+                    </v-tab>
+                    <v-tabs-items>
+                      <v-tab-item v-for="(iep, ikey) in animeEp" :key="ikey" >
+                        <v-card flat>
+                          <v-card-text> {{ iep.player }}</v-card-text>
+                        </v-card>
+                      </v-tab-item>
+                    </v-tabs-items>
+                  </v-tabs>
 
-                <v-tabs show-arrows>
-                  <v-tabs-slider></v-tabs-slider>
-                  <v-tab v-for="(ep, key) in animeEp" :key="key" >
-                    {{ ep.host }}
-                  </v-tab>
-                  <v-tabs-items>
-                    <v-tab-item v-for="(iep, ikey) in animeEp" :key="ikey" >
-                      <v-card flat>
-                        <v-card-text> {{ iep.player }}</v-card-text>
-                      </v-card>
-                    </v-tab-item>
-                  </v-tabs-items>
-                </v-tabs>
-
-              </v-expansion-panel-content>
-            </v-expansion-panel>
-
+                </v-expansion-panel-content>
+              </v-expansion-panel>
+           </v-card>
           </v-flex>
 
       <v-flex xs12 v-if="error || errorData">
@@ -124,14 +139,22 @@
 
       </v-layout>
     </v-container>
+    </v-card>
+    </v-flex>
   </div>
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 import mal from 'mal-scraper'
 import api from '../api'
 export default {
   name: 'Anime',
+  computed: {
+    ...mapGetters({
+      animes: 'animes'
+    })
+  },
   data () {
     return {
       q: '',
@@ -157,9 +180,12 @@ export default {
       animeEp: []
     }
   },
+  mounted () {
+    this.animesData()
+  },
   methods: {
     async search () {
-      this.query = this.q
+      this.query = this.q.title
       await this.animeInfo()
       await this.animeData()
     },
@@ -214,6 +240,21 @@ export default {
         console.log(data)
         this.animeEp = data
 
+        this.errorData = false
+        this.loadedData = true
+      } catch (err) {
+        console.log(err)
+        this.errorData = true
+        this.loadedData = false
+      }
+    },
+    async animesData () {
+      try {
+        const response = await api.get(`v1/anime`)
+        const data = response.data
+        console.log(data)
+        // this.animes = data
+        this.$store.commit('setAnimes', data)
         this.errorData = false
         this.loadedData = true
       } catch (err) {

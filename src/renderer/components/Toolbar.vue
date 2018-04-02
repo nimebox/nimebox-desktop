@@ -54,7 +54,6 @@
           </v-slide-y-transition>
         </v-container>
       </v-content>
-    <!-- </v-tabs-items> -->
     
   </div>
 </template>

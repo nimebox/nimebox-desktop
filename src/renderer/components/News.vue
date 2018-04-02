@@ -1,8 +1,9 @@
 <template>
 <div>
-  <v-progress-linear
+  <v-progress-linear 
     :indeterminate="!loaded"
     :active="!loaded"
+    v-if="!loaded"
   ></v-progress-linear>
     <v-card v-if="loaded">
       <v-container fluid style="min-height: 0;" grid-list-lg>
@@ -14,14 +15,14 @@
                 <v-layout row>
 
                   <v-flex xs6>
+                    <v-card-media :src="card.image" height="100px" contain></v-card-media>
+                  </v-flex>
+
+                  <v-flex xs6>
                     <div>
                       <h4>{{card.title}}</h4>
                       <div class="grey--text">{{card.description}}</div>
                     </div>
-                  </v-flex>
-
-                  <v-flex xs6>
-                    <v-card-media :src="card.image" height="100px" contain></v-card-media>
                   </v-flex>
 
                   <v-card-actions>
