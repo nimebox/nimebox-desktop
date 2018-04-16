@@ -1,32 +1,31 @@
 <template>
   <v-app :dark="dark">
-    <systembar></systembar>
-    <toolbar></toolbar>
+    <systembar/>
+    <toolbar/>
     <v-footer fixed>
-      <v-spacer></v-spacer>
+      <v-spacer/>
       <div>Nimebox &copy; {{ new Date().getFullYear() }}</div>
     </v-footer>
   </v-app>
 </template>
 
 <script>
-  import { mapGetters } from 'vuex'
-  import Systembar from '@/components/Systembar'
-  import Toolbar from '@/components/Toolbar'
+import { mapGetters } from 'vuex'
+import Systembar from '@/components/Systembar'
+import Toolbar from '@/components/Toolbar'
 
-  export default {
-    name: 'NimeboxDesktop',
-    computed: {
-      ...mapGetters({
-        dark: 'isDark'
-      })
-    },
-    components: { Systembar, Toolbar }
+export default {
+  name: 'NimeboxDesktop',
+  components: { Systembar, Toolbar },
+  computed: {
+    ...mapGetters({
+      dark: 'isDark'
+    })
   }
+}
 </script>
 
 <style lang="stylus">
-  @import './stylus/main.styl'
   body, html {
     overflow: hidden
   }

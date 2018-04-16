@@ -7,8 +7,10 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   modules,
-  plugins: [createPersistedState({
-    key: 'nimeboxdesktop'
-  })],
+  plugins: [
+    createPersistedState({
+      key: 'nimeboxdesktop'
+    })
+  ],
   strict: process.env.NODE_ENV !== 'production'
 })
