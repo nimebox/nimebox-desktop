@@ -19,14 +19,14 @@ export default {
   components: { Systembar, Toolbar },
   computed: {
     ...mapGetters({
-      dark: 'isDark'
+      dark: 'dark'
     })
   }
 }
 </script>
 
-<style lang="stylus">
+<style>
   body, html {
-    overflow: hidden
+    overflow: hidden;
   }
 </style>

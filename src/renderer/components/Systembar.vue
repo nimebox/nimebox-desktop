@@ -55,12 +55,12 @@ export default {
 }
 </script>
 
-<style scoped lang="stylus">
+<style scoped>
   .windowBar {
-    -webkit-app-region: drag
+    -webkit-app-region: drag;
   }
 
   .btns {
-    -webkit-app-region: no-drag
+    -webkit-app-region: no-drag;
   }
 </style>

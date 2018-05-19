@@ -2,7 +2,7 @@
   <div>
 
     <v-select
-      :items="animes.list"
+      :items="animeList.list"
       v-model="q"
       prepend-icon="search"
       append-icon="send"
@@ -14,7 +14,7 @@
       item-text="title"
       item-value="title" />
 
-    <v-flex xs12>
+    <v-flex v-if="animeListLoaded" xs12>
       <v-card>
         <v-container
           fluid
@@ -24,7 +24,7 @@
             wrap>
 
             <v-flex
-              v-if="query != null && !error && loaded"
+              v-if="query != null || animeInfoLoaded"
               xs12>
               <v-card>
                 <v-container
@@ -33,7 +33,7 @@
                   <v-layout row>
                     <v-flex xs4>
                       <v-card-media
-                        :src="mal.picture"
+                        :src="animeInfo.picture"
                         height="350px"
                         contain>
                         <v-container
@@ -51,23 +51,23 @@
                     <v-flex xs12>
                       <v-card-title primary-title>
                         <div>
-                          <div class="headline mb-1">{{ mal.title }}
+                          <div class="headline mb-1">{{ animeInfo.title }}
                             <v-chip
                               label
                               color="accent">
-                            <v-icon left>star</v-icon>{{ mal.score }}/10</v-chip>
+                            <v-icon left>star</v-icon>{{ animeInfo.score }}/10</v-chip>
                           </div>
-                          <v-chip outline>Type: {{ mal.type }}</v-chip>
-                          <v-chip outline>Episodes: {{ mal.episodes }}</v-chip>
-                          <v-chip outline>Ranked: {{ mal.ranked }}</v-chip>
-                          <v-chip outline>Members: {{ mal.members }}</v-chip>
-                          <v-chip outline>Aired: {{ mal.aired }}</v-chip>
-                          <div>{{ mal.synopsis }}</div>
+                          <v-chip outline>Type: {{ animeInfo.type }}</v-chip>
+                          <v-chip outline>Episodes: {{ animeInfo.episodes }}</v-chip>
+                          <v-chip outline>Ranked: {{ animeInfo.ranked }}</v-chip>
+                          <v-chip outline>Members: {{ animeInfo.members }}</v-chip>
+                          <v-chip outline>Aired: {{ animeInfo.aired }}</v-chip>
+                          <div>{{ animeInfo.synopsis }}</div>
                         </div>
                       </v-card-title>
                       <v-card-text>
                         <v-chip
-                          v-for="(genre, key) in mal.genres"
+                          v-for="(genre, key) in animeInfo.genres"
                           :key="key"
                           label
                           color="pink"
@@ -83,7 +83,7 @@
                       <v-btn
                         flat
                         color="pink"
-                        @click="$electron.shell.openExternal(mal.url)">
+                        @click="$electron.shell.openExternal(animeInfo.url)">
                         <v-icon>link</v-icon>
                       </v-btn>
                     </v-card-actions>
@@ -93,7 +93,7 @@
             </v-flex>
 
             <v-flex
-              v-if="query != null && !error && loadedData"
+              v-if="query != null || animeLoaded"
               xs12>
               <v-card>
                 <v-expansion-panel
@@ -104,7 +104,7 @@
                     :key="key">
                     <div
                       slot="header"
-                      @click.once="animeEpData(item.number)">
+                      @click.once="fetchAnimeEpisode(item.number)">
 
                       <v-list-tile avatar>
 
@@ -123,32 +123,20 @@
                     <v-tabs show-arrows>
                       <v-tabs-slider/>
                       <v-tab
-                        v-for="(ep, key) in animeEp"
+                        v-for="(ep, key) in animeEpisode"
                         :key="key">
                         {{ ep.host }}
                       </v-tab>
                       <v-tabs-items>
                         <v-tab-item
-                          v-for="(iep, ikey) in animeEp"
+                          v-for="(iep, ikey) in animeEpisode"
                           :key="ikey">
                           <v-card flat>
                             <v-card-text> {{ iep.player }}</v-card-text>
 
-                            <div v-if="iep.host === 'mp4upload'">
+                            <!-- <div v-if="iep.host === 'mp4upload'">
                               <v-btn color="primary" dark @click="parsePlayer(iep.player)">Open Player</v-btn>
-                                  <!-- <v-dialog v-model="dialog" max-width="500px">
-                                      <v-card>
-                                        <v-card-title>
-                                          <span>Player</span>
-                                          <v-spacer></v-spacer>
-                                      <player :source="() => parsePlayer(iep.player)" ></player>
-                                        </v-card-title>
-                                        <v-card-actions>
-                                          <v-btn color="primary" flat @click.stop="dialog=false">Close</v-btn>
-                                        </v-card-actions>
-                                      </v-card>
-                                    </v-dialog> -->
-                            </div>
+                            </div> -->
 
                           </v-card>
                         </v-tab-item>
@@ -161,7 +149,7 @@
             </v-flex>
 
             <v-flex
-              v-if="error || errorData"
+              v-if="!animeLoaded"
               xs12>
               <v-container
                 fluid
@@ -185,7 +173,7 @@
             </v-flex>
 
             <v-flex
-              v-if="!loaded"
+              v-if="!animeInfoLoaded"
               xs12>
               <v-container
                 fluid
@@ -207,6 +195,7 @@
                 </v-layout>
               </v-container>
             </v-flex>
+
           </v-layout>
         </v-container>
       </v-card>
@@ -215,139 +204,54 @@
 </template>
 
 <script>
+import {
+  FETCH_ANIME_LIST,
+  FETCH_ANIME_INFO,
+  FETCH_ANIME,
+  FETCH_ANIME_EPISODE
+} from '../store/actions.types'
 import { mapGetters } from 'vuex'
-import mal from 'mal-scraper'
-import api from '../api'
-import player from '@/components/Player.vue'
-import mp4upload from '../videoplayers/Mp4UploadCom'
 export default {
   name: 'Anime',
-  components: {
-    player
-  },
   data () {
     return {
       q: '',
       query: '',
-      mal: {
-        title: '',
-        url: '',
-        synopsis: '',
-        picture: '',
-        aired: '?',
-        episodes: '?',
-        score: '?',
-        type: '?',
-        genres: [],
-        members: '',
-        ranked: ''
-      },
-      anime: [],
-      error: false,
-      errorData: false,
-      loaded: false,
-      loadedData: false,
-      animeEp: [],
       dialog: false
     }
   },
   computed: {
     ...mapGetters({
-      animes: 'animes'
+      animeList: 'animeList',
+      animeListLoaded: 'animeListLoaded',
+      animeInfo: 'animeInfo',
+      animeInfoLoaded: 'animeInfoLoaded',
+      anime: 'anime',
+      animeLoaded: 'animeLoaded',
+      animeEpisode: 'animeEpisode',
+      animeEpisodeLoaded: 'animeEpisodeLoaded'
     })
   },
   mounted () {
-    this.animesData()
+    this.$store.dispatch(FETCH_ANIME_LIST)
   },
   methods: {
-    async search () {
+    search () {
       this.query = this.q.title
-      await this.animeInfo()
-      await this.animeData()
+      this.fetchAnimeInfo()
+      this.fetchAnime()
     },
-    async animeInfo () {
-      try {
-        console.log(this.query)
-        const response = await mal.getInfoFromName(this.query)
-        const data = response
-        console.log(data)
-
-        this.mal.title = data.title
-        this.mal.url = data.url
-        this.mal.picture = data.picture
-        this.mal.synopsis = data.synopsis
-        this.mal.aired = data.aired
-        this.mal.episodes = data.episodes
-        this.mal.score = data.score
-        this.mal.type = data.type
-        this.mal.genres = data.genres
-        this.mal.members = data.members
-        this.mal.ranked = data.ranked
-        this.error = false
-        this.loaded = true
-      } catch (err) {
-        console.log(err)
-        this.error = true
-        this.loaded = false
-      }
+    fetchAnimeInfo () {
+      this.$store.dispatch(FETCH_ANIME_INFO, this.query)
     },
-    async animeData () {
-      try {
-        console.log(this.query)
-        const response = await api.get(`v1/anime/${this.query}`)
-        const data = response.data
-        console.log(data)
-        this.anime = data
-
-        this.errorData = false
-        this.loadedData = true
-      } catch (err) {
-        console.log(err)
-        this.errorData = true
-        this.loadedData = false
-      }
+    fetchAnime () {
+      this.$store.dispatch(FETCH_ANIME, this.query)
     },
-    async animeEpData (n) {
-      console.log(`${this.query}/${n}`)
-      try {
-        console.log(this.query)
-        const response = await api.get(`v1/anime/${this.query}/${n}`)
-        const data = response.data
-        console.log(data)
-        this.animeEp = data
-
-        this.errorData = false
-        this.loadedData = true
-      } catch (err) {
-        console.log(err)
-        this.errorData = true
-        this.loadedData = false
-      }
-    },
-    async animesData () {
-      try {
-        const response = await api.get(`v1/anime`)
-        const data = response.data
-        console.log(data)
-        // this.animes = data
-        this.$store.commit('setAnimes', data)
-        this.errorData = false
-        this.loadedData = true
-      } catch (err) {
-        console.log(err)
-        this.errorData = true
-        this.loadedData = false
-      }
-    },
-    parsePlayer (url) {
-      // const data = await mp4upload(url)
-      console.log(url)
-      // this.$router.push({name: 'player', params: { source: () => parsePlayer(iep.player) }})
-      mp4upload('http://www.mp4upload.com/embed-mgjd92cvnoxc.html').then(el => console.log(el)).catch(err => console.log(err))
-      // return {
-      //   url: data.url,
-      //   poster: data.poster
-      // }
+    fetchAnimeEpisode (number) {
+      this.$store.dispatch(FETCH_ANIME_EPISODE, {
+        query: this.query,
+        number: number
+      })
     }
   }
 }

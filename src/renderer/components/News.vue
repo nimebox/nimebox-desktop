@@ -1,11 +1,11 @@
 <template>
   <div>
     <v-progress-linear
-      v-if="!loaded"
-      :indeterminate="!loaded"
-      :active="!loaded"
+      v-if="!newsLoaded"
+      :indeterminate="!newsLoaded"
+      :active="!newsLoaded"
     />
-    <v-card v-if="loaded">
+    <v-card v-if="newsLoaded">
       <v-container
         fluid
         style="min-height: 0;"
@@ -59,32 +59,26 @@
 </template>
 
 <script>
-import api from '../api'
+import { FETCH_NEWS } from '../store/actions.types'
+import { mapGetters } from 'vuex'
+
 export default {
   name: 'News',
   data () {
     return {
-      news: [],
-      loaded: false,
-      error: true
     }
   },
-  async mounted () {
-    try {
-      const response = await api.get(`v1/news`)
-      const data = response.data
-      console.log(data)
-      this.news = data
-
-      this.error = false
-      this.loaded = true
-    } catch (err) {
-      console.log(err)
-      this.error = true
-    }
+  computed: {
+    ...mapGetters({
+      news: 'news',
+      newsLoaded: 'newsLoaded'
+    })
+  },
+  mounted () {
+    this.$store.dispatch(FETCH_NEWS)
   }
 }
 </script>
 
-<style lang="stylus">
+<style>
 </style>

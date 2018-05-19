@@ -1,20 +1,17 @@
+import { SET_DARK_THEME } from '../actions.types'
+
 const state = {
-  dark: false,
-  animes: []
+  dark: false
 }
 
 const mutations = {
-  setDark (state, dark) {
-    state.dark = dark
-  },
-  setAnimes (state, animes) {
-    state.animes = animes
+  [SET_DARK_THEME] (state, payload) {
+    state.dark = payload
   }
 }
 
 const getters = {
-  isDark: state => state.dark,
-  animes: state => state.animes
+  dark: state => state.dark
 }
 
 export default {

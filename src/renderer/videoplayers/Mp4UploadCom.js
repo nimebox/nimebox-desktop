@@ -1,8 +1,5 @@
 import * as Xray from 'x-ray'
 import * as axios from 'axios'
-// const x = require('x-ray')()
-// const axios = require('axios')
-// const _ = require('lodash')
 
 const x = Xray()
 

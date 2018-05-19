@@ -49,7 +49,7 @@
           v-for="(item, key) in items"
           :key="key"
           :to="item.to"
-          flat> {{ item.name }}</v-btn>
+          flat> {{ item.name }}<v-icon  right>{{item.icon}}</v-icon></v-btn>
       </v-toolbar-items>
       <v-spacer/>
       <v-toolbar-side-icon @click="changeTheme">
@@ -68,11 +68,11 @@
         </v-slide-y-transition>
       </v-container>
     </v-content>
-
   </div>
 </template>
 
 <script>
+import { SET_DARK_THEME } from '../store/actions.types'
 import { mapGetters } from 'vuex'
 export default {
   name: 'Toolbar',
@@ -82,41 +82,44 @@ export default {
       items: [
         {
           name: 'News',
-          to: '/'
+          to: '/',
+          icon: 'rss_feed'
         },
         {
           name: 'Anime',
-          to: '/anime'
+          to: '/anime',
+          icon: 'local_movies'
         },
         {
           name: 'Manga',
-          to: '/manga'
+          to: '/manga',
+          icon: 'books'
         }
       ]
     }
   },
   computed: {
     ...mapGetters({
-      dark: 'isDark'
+      dark: 'dark'
     })
   },
   methods: {
     changeTheme () {
       if (this.dark) {
-        this.$store.commit('setDark', false)
+        this.$store.commit(SET_DARK_THEME, false)
       } else {
-        this.$store.commit('setDark', true)
+        this.$store.commit(SET_DARK_THEME, true)
       }
     }
   }
 }
 </script>
 
-<style lang="stylus">
+<style>
   .main-container {
-    max-height: calc(100vh - 130px)
-    height: auto
-    overflow-y: auto
-    overflow-x: hidden
+    max-height: calc(100vh - 130px);
+    height: auto;
+    overflow-y: auto;
+    overflow-x: hidden;
   }
 </style>
