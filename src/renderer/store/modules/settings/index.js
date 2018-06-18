@@ -1,4 +1,4 @@
-import { SET_DARK_THEME } from '../actions.types'
+import { SET_DARK_THEME } from '../../actions.types'
 
 const state = {
   dark: false
@@ -15,6 +15,7 @@ const getters = {
 }
 
 export default {
+  namespaced: true,
   state,
   mutations,
   getters

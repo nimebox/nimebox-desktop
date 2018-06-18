@@ -62,9 +62,7 @@
         fluid
         class="main-container">
         <v-slide-y-transition mode="out-in">
-          <keep-alive>
-            <router-view/>
-          </keep-alive>
+          <router-view/>
         </v-slide-y-transition>
       </v-container>
     </v-content>
@@ -75,7 +73,7 @@
 import { SET_DARK_THEME } from '../store/actions.types'
 import { mapGetters } from 'vuex'
 export default {
-  name: 'Toolbar',
+  name: 'toolbar',
   data () {
     return {
       drawer: null,
@@ -100,15 +98,15 @@ export default {
   },
   computed: {
     ...mapGetters({
-      dark: 'dark'
+      dark: 'settings/dark'
     })
   },
   methods: {
     changeTheme () {
       if (this.dark) {
-        this.$store.commit(SET_DARK_THEME, false)
+        this.$store.commit(`settings/${SET_DARK_THEME}`, false)
       } else {
-        this.$store.commit(SET_DARK_THEME, true)
+        this.$store.commit(`settings/${SET_DARK_THEME}`, true)
       }
     }
   }

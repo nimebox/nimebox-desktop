@@ -15,17 +15,17 @@ import Systembar from '@/components/Systembar'
 import Toolbar from '@/components/Toolbar'
 
 export default {
-  name: 'NimeboxDesktop',
+  name: 'app',
   components: { Systembar, Toolbar },
   computed: {
     ...mapGetters({
-      dark: 'dark'
+      dark: 'settings/dark'
     })
   }
 }
 </script>
 
-<style>
+<style scoped>
   body, html {
     overflow: hidden;
   }
