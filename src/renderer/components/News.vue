@@ -14,7 +14,21 @@
           row
           wrap>
 
+          <v-flex v-if="error" xs12>
+                    <div>
+                      <v-alert
+                        :value="true"
+                        outline
+                        color="error"
+                        icon="warning">
+                        Error fetching news data.
+                        <div>{{error}}</div>
+                      </v-alert>
+                    </div>
+            </v-flex>
+
           <v-flex
+          v-else
             v-for="(card, key) in news"
             :key="key"
             xs12>
@@ -67,7 +81,8 @@ export default {
   computed: {
     ...mapGetters({
       news: 'news/items',
-      loading: 'news/loading'
+      loading: 'news/loading',
+      error: 'news/error'
     })
   },
   mounted () {

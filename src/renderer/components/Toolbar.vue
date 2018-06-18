@@ -62,7 +62,9 @@
         fluid
         class="main-container">
         <v-slide-y-transition mode="out-in">
-          <router-view/>
+          <keep-alive>
+            <router-view/>
+          </keep-alive>
         </v-slide-y-transition>
       </v-container>
     </v-content>
