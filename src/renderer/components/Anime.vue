@@ -1,33 +1,14 @@
 <template>
   <div>
 
-    <v-select
-      :items="animeList.list"
-      v-model="q"
-      prepend-icon="search"
-      append-icon="send"
-      :append-icon-cb="search"
-      label="Search"
-      flat
-      cache-items
-      combobox
-      item-text="title"
-      item-value="title" />
+    <v-select :items="animeList.list" v-model="q" prepend-icon="search" append-icon="send" :append-icon-cb="search" label="Search" flat cache-items combobox item-text="title" item-value="title" />
 
     <v-flex v-if="query && !animeListLoading" xs12>
       <v-card>
-        <v-container
-          fluid
-          grid-list-lg>
-          <v-layout
-            row
-            wrap>
+        <v-container fluid grid-list-lg>
+          <v-layout row wrap>
 
-            <v-progress-linear
-              v-if="animeInfoLoading || animeLoading"
-              :indeterminate="animeInfoLoading || animeLoading"
-              :active="animeInfoLoading || animeLoading"
-            />
+            <v-progress-linear v-if="animeInfoLoading || animeLoading" :indeterminate="animeInfoLoading || animeLoading" :active="animeInfoLoading || animeLoading" />
             <v-flex v-if="query && !animeInfoLoading" xs12>
               <anime-info :animeInfo="animeInfo"></anime-info>
             </v-flex>
@@ -36,29 +17,13 @@
               <anime-episode :anime="anime" :query="query"></anime-episode>
             </v-flex>
 
-            <v-flex
-              v-if="animeError"
-              xs12>
-              <v-container
-                fluid
-                grid-list-lg>
-                <v-layout row>
-
-                  <v-flex xs12>
-                    <div>
-                      <v-alert
-                        :value="true"
-                        outline
-                        color="error"
-                        icon="warning">
-                        Error fetching data for query: <b>{{ query }}</b>
-                        <div>{{animeError}}</div>
-                      </v-alert>
-                    </div>
-                  </v-flex>
-
-                </v-layout>
-              </v-container>
+            <v-flex v-if="animeError" xs12>
+              <div>
+                <v-alert :value="true" outline color="error" icon="warning">
+                  Error fetching data for query: <b>{{ query }}</b>
+                  <div>{{animeError}}</div>
+                </v-alert>
+              </div>
             </v-flex>
 
           </v-layout>
@@ -80,7 +45,10 @@ import AnimeEpisode from '@/components/AnimeEpisode'
 
 export default {
   name: 'anime',
-  components: { AnimeInfo, AnimeEpisode },
+  components: {
+    AnimeInfo,
+    AnimeEpisode
+  },
   data () {
     return {
       q: '',
@@ -117,7 +85,3 @@ export default {
   }
 }
 </script>
-
-<style>
-
-</style>

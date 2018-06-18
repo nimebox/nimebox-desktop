@@ -1,48 +1,26 @@
 <template>
   <div>
-    <v-progress-linear
-      v-if="loading"
-      :indeterminate="loading"
-      :active="loading"
-    />
+    <v-progress-linear v-if="loading" :indeterminate="loading" :active="loading" />
     <v-card v-if="!loading">
-      <v-container
-        fluid
-        style="min-height: 0;"
-        grid-list-lg>
-        <v-layout
-          row
-          wrap>
+      <v-container fluid style="min-height: 0;" grid-list-lg>
+        <v-layout row wrap>
 
           <v-flex v-if="error" xs12>
-                    <div>
-                      <v-alert
-                        :value="true"
-                        outline
-                        color="error"
-                        icon="warning">
-                        Error fetching news data.
-                        <div>{{error}}</div>
-                      </v-alert>
-                    </div>
-            </v-flex>
+            <div>
+              <v-alert :value="true" outline color="error" icon="warning">
+                Error fetching news data.
+                <div>{{error}}</div>
+              </v-alert>
+            </div>
+          </v-flex>
 
-          <v-flex
-          v-else
-            v-for="(card, key) in news"
-            :key="key"
-            xs12>
+          <v-flex v-else v-for="(card, key) in news" :key="key" xs12>
             <v-card>
-              <v-container
-                fluid
-                grid-list-lg>
+              <v-container fluid grid-list-lg>
                 <v-layout row>
 
                   <v-flex xs6>
-                    <v-card-media
-                      :src="card.image"
-                      height="100px"
-                      contain/>
+                    <v-card-media :src="card.image" height="100px" contain/>
                   </v-flex>
 
                   <v-flex xs6>
@@ -54,9 +32,7 @@
 
                   <v-card-actions>
                     <v-spacer/>
-                    <v-btn
-                      icon
-                      @click="$electron.shell.openExternal(card.url)">
+                    <v-btn icon @click="$electron.shell.openExternal(card.url)">
                       <v-icon>link</v-icon>
                     </v-btn>
                   </v-card-actions>

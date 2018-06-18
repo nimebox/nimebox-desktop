@@ -1,31 +1,14 @@
 <template>
-  <v-system-bar
-    app
-    fixed
-    window
-    dark
-    class="windowBar">
+  <v-system-bar app fixed window dark class="windowBar">
     <div>NIMEBOX DESKTOP</div>
     <v-spacer/>
-    <v-btn
-      small
-      flat
-      class="btns"
-      @click="minimize">
+    <v-btn small flat class="btns" @click="minimize">
       <v-icon>remove</v-icon>
     </v-btn>
-    <v-btn
-      small
-      flat
-      class="btns"
-      @click="maximize">
+    <v-btn small flat class="btns" @click="maximize">
       <v-icon>check_box_outline_blank</v-icon>
     </v-btn>
-    <v-btn
-      small
-      flat
-      class="btns"
-      @click="close">
+    <v-btn small flat class="btns" @click="close">
       <v-icon>close</v-icon>
     </v-btn>
   </v-system-bar>
@@ -56,11 +39,11 @@ export default {
 </script>
 
 <style scoped>
-  .windowBar {
-    -webkit-app-region: drag;
-  }
+.windowBar {
+  -webkit-app-region: drag;
+}
 
-  .btns {
-    -webkit-app-region: no-drag;
-  }
+.btns {
+  -webkit-app-region: no-drag;
+}
 </style>
