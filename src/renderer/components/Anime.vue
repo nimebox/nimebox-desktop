@@ -67,7 +67,7 @@ export default {
       animeError: 'anime/animeError'
     })
   },
-  created () {
+  mounted () {
     this.$store.dispatch(`anime/${FETCH_ANIME_LIST}`)
   },
   methods: {

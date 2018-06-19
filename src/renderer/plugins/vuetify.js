@@ -7,7 +7,7 @@ export default Vue.use(Vuetify, {
   theme: {
     primary: colors.teal.base,
     secondary: colors.teal.darken1,
-    accent: colors.yellow.accent3,
+    accent: colors.teal.accent3,
     error: colors.red.accent3
   }
 })

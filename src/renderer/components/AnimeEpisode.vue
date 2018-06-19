@@ -29,8 +29,18 @@
             </v-tab>
             <v-tabs-items>
               <v-tab-item v-for="(iep, ikey) in animeEpisode" :key="ikey">
-                <v-card flat>
-                  <v-card-text> {{ iep.player }}</v-card-text>
+                <v-card >
+                  <div v-if="iep.host === 'mp4upload'">
+                  <v-btn color="accent" @click.once="fetchVideo(iep.host, iep.player)">Watch</v-btn>
+                  <div v-if="playerOptions.sources[0].src">
+                    <!-- <video width="100%" controls :src="playerOptions.sources[0].src"></video> -->
+                     <video-player
+                        class="video-player-box"
+                        ref="videoPlayer"
+                        :options="playerOptions"/>
+                    </div>
+                 </div>
+                 <div v-else>Player currently unsupported {{iep}}</div>
                 </v-card>
               </v-tab-item>
             </v-tabs-items>
@@ -45,15 +55,35 @@
 <script>
 import { FETCH_ANIME_EPISODE } from '../store/actions.types'
 import { mapGetters } from 'vuex'
+import mp4Upload from '../videoplayers/Mp4UploadCom'
+import 'video.js/dist/video-js.css'
+import { videoPlayer } from 'vue-video-player'
+
 export default {
   name: 'animeEpisode',
   props: ['anime', 'query'],
+  data () {
+    return {
+      playerOptions: {
+        playbackRates: [0.7, 1.0, 1.5, 2.0],
+        sources: [{
+          src: ''
+        }],
+        poster: '',
+        fluid: true
+      }
+    }
+  },
+  components: { videoPlayer },
   computed: {
     ...mapGetters({
       animeEpisode: 'anime/animeEpisode',
       animeEpisodeLoading: 'anime/animeEpisodeLoading',
       animeEpisodeError: 'anime/animeEpisodeError'
-    })
+    }),
+    player () {
+      return this.$refs.videoPlayer.player
+    }
   },
   methods: {
     fetchAnimeEpisode (number) {
@@ -61,7 +91,19 @@ export default {
         query: this.query,
         number: number
       })
+    },
+    async fetchVideo (host, url) {
+      if (host === 'mp4upload') {
+        const { file, poster } = await mp4Upload(url)
+        this.playerOptions.poster = poster
+        this.playerOptions.sources[0].src = file
+      }
     }
   }
 }
 </script>
+<style scoped>
+.video-player-box {
+  width: 100%;
+}
+</style>
