@@ -53,7 +53,7 @@
 
 <script>
 export default {
-  name: 'animeInfo',
+  name: 'anime-info',
   props: ['animeInfo']
 }
 </script>

@@ -31,13 +31,9 @@
               <v-tab-item v-for="(iep, ikey) in animeEpisode" :key="ikey">
                 <v-card >
                   <div v-if="iep.host === 'mp4upload'">
-                  <v-btn color="accent" @click.once="fetchVideo(iep.host, iep.player)">Watch</v-btn>
-                  <div v-if="playerOptions.sources[0].src">
-                    <!-- <video width="100%" controls :src="playerOptions.sources[0].src"></video> -->
-                     <video-player
-                        class="video-player-box"
-                        ref="videoPlayer"
-                        :options="playerOptions"/>
+                  <v-btn flat color="primary" @click.once="fetchVideo(iep.host, iep.player)">Watch</v-btn>
+                  <div v-if="file">
+                     <video-player :src="file" :poster="poster" />
                     </div>
                  </div>
                  <div v-else>Player currently unsupported {{iep}}</div>
@@ -56,34 +52,24 @@
 import { FETCH_ANIME_EPISODE } from '../store/actions.types'
 import { mapGetters } from 'vuex'
 import mp4Upload from '../videoplayers/Mp4UploadCom'
-import 'video.js/dist/video-js.css'
-import { videoPlayer } from 'vue-video-player'
+import videoPlayer from '@/components/VideoPlayer'
 
 export default {
-  name: 'animeEpisode',
+  name: 'anime-episode',
   props: ['anime', 'query'],
+  components: { videoPlayer },
   data () {
     return {
-      playerOptions: {
-        playbackRates: [0.7, 1.0, 1.5, 2.0],
-        sources: [{
-          src: ''
-        }],
-        poster: '',
-        fluid: true
-      }
+      file: '',
+      poster: ''
     }
   },
-  components: { videoPlayer },
   computed: {
     ...mapGetters({
       animeEpisode: 'anime/animeEpisode',
       animeEpisodeLoading: 'anime/animeEpisodeLoading',
       animeEpisodeError: 'anime/animeEpisodeError'
-    }),
-    player () {
-      return this.$refs.videoPlayer.player
-    }
+    })
   },
   methods: {
     fetchAnimeEpisode (number) {
@@ -95,15 +81,10 @@ export default {
     async fetchVideo (host, url) {
       if (host === 'mp4upload') {
         const { file, poster } = await mp4Upload(url)
-        this.playerOptions.poster = poster
-        this.playerOptions.sources[0].src = file
+        this.poster = poster
+        this.file = file
       }
     }
   }
 }
 </script>
-<style scoped>
-.video-player-box {
-  width: 100%;
-}
-</style>
