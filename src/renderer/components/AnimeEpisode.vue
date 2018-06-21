@@ -10,7 +10,7 @@
 
     <v-card v-else>
       <v-expansion-panel popout focusable>
-        <v-expansion-panel-content v-for="(item, key) in anime.list" :key="key">
+        <v-expansion-panel-content v-for="(item, key) in anime.items" :key="key">
           <div slot="header" @click.once="fetchAnimeEpisode(item.number)">
             <v-list-tile avatar>
               <v-list-tile-action>

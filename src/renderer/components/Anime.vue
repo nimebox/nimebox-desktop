@@ -1,7 +1,7 @@
 <template>
   <div>
 
-    <v-select :items="animeList.list" v-model="q" prepend-icon="search" append-icon="send" :append-icon-cb="search" label="Search" flat cache-items combobox item-text="title" item-value="title" />
+    <v-select :items="animeList.items" v-model="q" prepend-icon="search" append-icon="send" :append-icon-cb="search" label="Search" flat cache-items combobox item-text="title" item-value="title" />
 
     <v-flex v-if="query && !animeListLoading" xs12>
       <v-card>
