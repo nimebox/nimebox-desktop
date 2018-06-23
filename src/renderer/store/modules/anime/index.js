@@ -31,10 +31,10 @@ const state = {
 }
 
 const actions = {
-  async [FETCH_ANIME_LIST] (store) {
+  async [FETCH_ANIME_LIST] (store, provider) {
     store.commit(SET_ANIME_LIST_LOADING, true)
     try {
-      const response = await api.get(`v1/anime`)
+      const response = await api.get(`v1/anime?provider=${provider}`)
       store.commit(FETCH_ANIME_LIST, response.data)
     } catch (err) {
       console.error(err)
@@ -55,10 +55,10 @@ const actions = {
       store.commit(SET_ANIME_INFO_LOADING, false)
     }
   },
-  async [FETCH_ANIME] (store, query) {
+  async [FETCH_ANIME] (store, {query, provider}) {
     store.commit(SET_ANIME_LOADING, true)
     try {
-      const response = await api.get(`v1/anime/${query}`)
+      const response = await api.get(`v1/anime/${query}?provider=${provider}`)
       store.commit(FETCH_ANIME, response.data)
     } catch (err) {
       console.error(err)
